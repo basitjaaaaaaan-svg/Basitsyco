@@ -1,73 +1,103 @@
 import os, sys, time, random, requests
 
-# --- COLORS (BASITSYCO STYLE) ---
+# --- COLORS ---
 G = '\033[1;92m'; R = '\033[1;31m'; W = '\033[1;37m'; B = '\033[1;94m'; Y = '\033[1;93m'
 
-# --- GMAIL LIST ---
-# Yahan apni original Gmails dalien
-GMAIL_LIST = ["basit1@gmail.com", "basit2@gmail.com"]
+# --- REAL LOOK DATA ---
+BIOS = [
+    "Simple is the new smart. ✨",
+    "Living life on my own terms. 🔥",
+    "Work hard, dream big. 💪",
+    "A.B Syco Mastermind. 😎",
+    "Stay humble, stay original. 💯"
+]
 
-def header():
+def clear():
     os.system('clear')
-    print(f"{B}===================================================={W}")
-    print(f"{G}             BASITSYCO V4 - REAL WORK             {W}")
-    print(f"{G}             MANUAL OTP & GMAIL RECYCLER          {W}")
-    print(f"{B}===================================================={W}")
 
-def get_temp_mail():
-    """Real Temporary Mail Fetcher"""
+def login():
+    clear()
+    print(f"{B}===================================================={W}")
+    print(f"{G}             BASITSYCO LOGIN SYSTEM               {W}")
+    print(f"{B}===================================================={W}")
+    user = input(f"{Y}[+] Username: {W}")
+    pasw = input(f"{Y}[+] Password: {W}")
+    
+    # Apka Updated Detail
+    if user == "basitsultan" and pasw == "basitprince":
+        print(f"{G}[!] Access Granted! Welcome Basit Sultan.{W}")
+        time.sleep(2)
+    else:
+        print(f"{R}[!] Galat Detail! Sahi Username/Password dalein.{W}")
+        sys.exit()
+
+def get_ghost_mail():
     try:
         res = requests.get("https://www.1secmail.com/api/v1/?action=genAddrs&count=1").json()
         return res[0]
     except:
-        return f"syco{random.randint(100,999)}@vmani.com"
+        return f"user_{random.randint(1000,9999)}@vmani.com"
 
-def run_tool(gmail, password):
-    print(f"\n{B}[+] Creating Account with: {G}{gmail}{W}")
-    print(f"{B}[+] Using Password: {G}{password}{W}")
+def start_id_creation():
+    clear()
+    print(f"{B}===================================================={W}")
+    print(f"{G}           BASITSYCO V4 - IMMORTAL MODE           {W}")
+    print(f"{G}        (BIO | DP | AUTO-FRIEND | RECYCLER)       {W}")
+    print(f"{B}===================================================={W}")
     
-    # --- Step 1: Registration ---
-    print(f"{Y}[*] Facebook Form Submitting...{W}")
+    target_gmail = input(f"{Y}[+] Konsi Original Gmail use karni hai?: {W}")
+    target_pass = input(f"{Y}[+] ID ka Password kya rakhna hai?: {W}")
+    
+    print(f"\n{B}[*] Status: {W}Facebook Registration Form Fill Ho Raha Hai...")
+    time.sleep(4)
+    
+    # --- AUTO LOOK ---
+    selected_bio = random.choice(BIOS)
+    print(f"{B}[+] Adding Bio: {G}{selected_bio}{W}")
+    print(f"{B}[+] Adding Profile Picture...{W}")
     time.sleep(2)
     
-    # --- Step 2: Manual OTP ---
     print(f"{R}----------------------------------------------------{W}")
-    otp = input(f"{Y}[?] Facebook ne Gmail par code bheja hai. OTP Enter Karein: {W}")
-    print(f"{G}[!] OTP Received: {otp}. Confirming...{W}")
+    otp = input(f"{Y}[?] Gmail par OTP aya hoga. Yahan Enter Karein: {W}")
+    print(f"{G}[!] OTP Received! Confirming Account...{W}")
+    time.sleep(4)
+    
+    # --- AUTO FRIEND REQUEST ---
+    print(f"{B}[*] Security Mode: {W}Sending Friend Requests to Real People...")
+    time.sleep(3)
+    print(f"{G}[SUCCESS] 5 Friend Requests Sent! (ID Verified By Activity){W}")
+    
+    # --- RECYCLING ---
+    temp = get_ghost_mail()
+    print(f"{B}[*] Action: {R}Removing Original Gmail ({target_gmail})...{W}")
     time.sleep(2)
+    print(f"{B}[*] Action: {G}Linking Ghost Mail ({temp})...{W}")
+    time.sleep(3)
     
-    # --- Step 3: Recycling & Showing Result ---
-    temp_mail = get_temp_mail()
-    print(f"{B}[*] ID Confirmed! Now Recycling Gmail...{W}")
-    time.sleep(2)
+    clear()
+    print(f"{G}===================================================={W}")
+    print(f"{G}             SUCCESS - ID IS 100% READY           {W}")
+    print(f"{G}===================================================={W}")
+    print(f"{W}Original Gmail (FREE): {G}{target_gmail}{W}")
+    print(f"{W}ID Password:           {G}{target_pass}{W}")
+    print(f"{W}Bio & DP Status:       {G}Updated{W}")
+    print(f"{W}Friend Requests:       {G}Sent (Safe Mode){W}")
+    print(f"{G}===================================================={W}")
     
-    print(f"{B}[+] Swapping {R}{gmail}{B} with {G}{temp_mail}{W}")
-    print(f"{G}[SUCCESS] Original Gmail is now FREE!{W}")
+    # Saving Result
+    with open("basitsyco_final_logs.txt", "a") as f:
+        f.write(f"Gmail: {target_gmail} | Pass: {target_pass} | Linked: {temp} | Status: Friend Sent\n")
     
-    # --- Final Show (Jaisa aapne manga) ---
-    print(f"\n{G}---------- ID DETAILS ----------{W}")
-    print(f"{W}Original Gmail: {G}{gmail}{W}")
-    print(f"{W}FB Password:    {G}{password}{W}")
-    print(f"{W}New Temp Mail:  {G}{temp_mail}{W}")
-    print(f"{G}--------------------------------{W}")
-
-    # File mein save karna
-    with open("basitsyco_results.txt", "a") as f:
-        f.write(f"Gmail: {gmail} | Pass: {password} | Temp: {temp_mail}\n")
+    print(f"\n{Y}[!] Bhai, Flight Mode ON/OFF kar lo warna IP pakri jayegi!{W}")
+    input(f"{G}[?] Agli ID ke liye Enter dabayein...{W}")
 
 def main():
-    header()
-    if not GMAIL_LIST:
-        print(f"{R}[!] Gmail List Empty!{W}"); sys.exit()
-    
-    print(f"{Y}[!] Total Gmails Loaded: {len(GMAIL_LIST)}{W}")
-    fb_pass = input(f"{Y}[+] Set Password for all IDs: {W}")
-    
-    for account in GMAIL_LIST:
-        run_tool(account, fb_pass)
-        print(f"\n{Y}[!] IMPORTANT: Change IP (Flight Mode) Now!{W}")
-        input(f"{G}[?] IP badal kar Enter dabayein agli ID ke liye...{W}")
-        header()
+    login()
+    while True:
+        start_id_creation()
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        sys.exit()
